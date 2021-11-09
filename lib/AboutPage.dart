@@ -15,12 +15,13 @@ class AboutPage extends StatelessWidget {
       body: Center(
         child: Container(
           width: 600.0,
-          height: 200.0,
+          height: 300.0,
+          padding: EdgeInsets.symmetric(horizontal: 15.0),
           child: Column(
             children: [
               Text(
                 'TripSitter is an Open Source Harm Reduction Tool, providing a way for' +
-                    ' users of drugs to record what they have taken and their experiences.',
+                    ' consumers of substances to record what they have taken and their experiences.',
                 style: Theme.of(context).textTheme.bodyText1,
                 textAlign: TextAlign.center,
               ),
@@ -67,7 +68,12 @@ class AboutPage extends StatelessWidget {
         children: [
           FloatingActionButton(
             heroTag: 'source',
-            onPressed: () {},
+            onPressed: () async {
+              String _url = 'https://github.com/SecareLupus/trip_sitter';
+              await canLaunch(_url)
+                  ? await launch(_url)
+                  : throw 'Could not launch $_url';
+            },
             backgroundColor: Colors.red,
             tooltip: 'View Source',
             child: Icon(Icons.code),

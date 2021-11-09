@@ -7,6 +7,7 @@ import 'package:trip_sitter/hive_objects/Note.dart';
 import 'package:trip_sitter/hive_objects/Substance.dart';
 import 'package:trip_sitter/hive_objects/TripRecord.dart';
 import 'package:intl/intl.dart' show DateFormat;
+import 'package:url_launcher/url_launcher.dart';
 
 part 'HomePage.dart';
 part 'util/InputDialogLib.dart';
