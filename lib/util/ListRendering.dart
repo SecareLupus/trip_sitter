@@ -2,8 +2,31 @@ part of '../main.dart';
 
 final DateFormat formatter = DateFormat('EEE, MMM d, y @ H:m');
 
-ListTile _substanceTile({String? substance, String? dose, String? timestamp}) {
-  String _ts = formatter.format(DateTime.parse(timestamp ?? ''));
+ListTile _substanceTile(
+    {String? substance,
+    String? dose,
+    String? timestamp,
+    String tripKey = 'active_trip'}) {
+  DateTime _first = tripList
+              .get(tripKey == 'active_trip' ? tripKey : int.parse(tripKey))!
+              .substances
+              .length >
+          0
+      ? DateTime.parse(tripList
+              .get(tripKey == 'active_trip' ? tripKey : int.parse(tripKey))!
+              .substances
+              .first
+              .timestamp ??
+          '')
+      : DateTime.now();
+  DateTime _current = DateTime.parse(timestamp ?? '');
+  Duration _difference = _current.difference(_first);
+  String _ts = _difference == Duration.zero
+      ? '\nTime T=0 @ ' + formatter.format(DateTime.parse(timestamp ?? ''))
+      : '\nT ${_difference.isNegative ? '-' : '+'} ' +
+          '${(_difference.abs().inHours > 0) ? _difference.inHours.toString() + 'hr : ' : ''}' +
+          '${(_difference.abs().inMinutes % 60).toString().padLeft(2, '0')}min' +
+          ' : ${(_difference.abs().inSeconds % 60).toString().padLeft(2, '0')}sec';
   return ListTile(
     leading: CircleAvatar(
       child: Icon(Icons.science_outlined),
@@ -13,8 +36,26 @@ ListTile _substanceTile({String? substance, String? dose, String? timestamp}) {
   );
 }
 
-ListTile _noteTile({String? note, String? timestamp}) {
-  String _ts = formatter.format(DateTime.parse(timestamp ?? ''));
+ListTile _noteTile(
+    {String? note, String? timestamp, String tripKey = 'active_trip'}) {
+  DateTime _first = tripList
+              .get(tripKey == 'active_trip' ? tripKey : int.parse(tripKey))!
+              .substances
+              .length >
+          0
+      ? DateTime.parse(tripList
+              .get(tripKey == 'active_trip' ? tripKey : int.parse(tripKey))!
+              .substances
+              .first
+              .timestamp ??
+          '')
+      : DateTime.now();
+  DateTime _current = DateTime.parse(timestamp ?? '');
+  Duration _difference = _current.difference(_first);
+  String _ts = 'T ${_difference.isNegative ? '-' : '+'} ' +
+      '${(_difference.abs().inHours > 0) ? _difference.inHours.toString() + 'hr : ' : ''}' +
+      '${(_difference.abs().inMinutes % 60).toString().padLeft(2, '0')}min' +
+      ' : ${(_difference.abs().inSeconds % 60).toString().padLeft(2, '0')}sec';
 
   return ListTile(
     leading: CircleAvatar(
@@ -84,15 +125,16 @@ List<ListTile> _renderList({key: 'active_trip'}) {
           listOfTiles.add(_substanceTile(
               substance: si.current.name,
               dose: si.current.doseGrade,
-              timestamp: si.current.timestamp));
+              timestamp: si.current.timestamp,
+              tripKey: key.toString()));
           si_iter = si.moveNext();
         }
       } else if (diff > Duration.zero) {
         if (ni_iter) {
           listOfTiles.add(_noteTile(
-            note: ni.current.note,
-            timestamp: ni.current.timestamp,
-          ));
+              note: ni.current.note,
+              timestamp: ni.current.timestamp,
+              tripKey: key.toString()));
           ni_iter = ni.moveNext();
         }
       } else if (diff == Duration.zero) {
@@ -100,15 +142,16 @@ List<ListTile> _renderList({key: 'active_trip'}) {
           listOfTiles.add(_substanceTile(
               substance: si.current.name,
               dose: si.current.doseGrade,
-              timestamp: si.current.timestamp));
+              timestamp: si.current.timestamp,
+              tripKey: key.toString()));
           si_iter = si.moveNext();
         }
 
         if (ni_iter) {
           listOfTiles.add(_noteTile(
-            note: ni.current.note,
-            timestamp: ni.current.timestamp,
-          ));
+              note: ni.current.note,
+              timestamp: ni.current.timestamp,
+              tripKey: key.toString()));
           ni_iter = ni.moveNext();
         }
       } else {
