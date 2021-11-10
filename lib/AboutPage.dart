@@ -21,7 +21,7 @@ class AboutPage extends StatelessWidget {
             children: [
               Text(
                 'TripSitter is an Open Source Harm Reduction Tool, providing a way for' +
-                    ' consumers of substances to record what they have taken and their experiences.',
+                    ' people who use substances to record what they have taken and their experiences.',
                 style: Theme.of(context).textTheme.bodyText1,
                 textAlign: TextAlign.center,
               ),
@@ -39,8 +39,8 @@ class AboutPage extends StatelessWidget {
                 height: 15.0,
               ),
               Text(
-                'The creators of TripSitter do not advocate the use or abuse of' +
-                    ' drugs; this tool is provided for Harm Reduction with the' +
+                'The creators of TripSitter do not advocate the use of, or abstinence from' +
+                    ' drugs. This tool is created to assist in Harm Reduction, with the' +
                     ' goal of helping people stay safe.',
                 style: Theme.of(context)
                     .textTheme

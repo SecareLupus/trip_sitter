@@ -2,11 +2,12 @@ part of '../main.dart';
 
 final DateFormat formatter = DateFormat('EEE, MMM d, y @ H:m');
 
-ListTile _substanceTile(
-    {String? substance,
-    String? dose,
-    String? timestamp,
-    String tripKey = 'active_trip'}) {
+ListTile _substanceTile({
+  String? substance,
+  String? dose,
+  String? timestamp,
+  String tripKey = 'active_trip',
+}) {
   DateTime _first = tripList
               .get(tripKey == 'active_trip' ? tripKey : int.parse(tripKey))!
               .substances
@@ -36,8 +37,12 @@ ListTile _substanceTile(
   );
 }
 
-ListTile _noteTile(
-    {String? note, String? timestamp, String tripKey = 'active_trip'}) {
+ListTile _noteTile({
+  String? note,
+  String? timestamp,
+  String tripKey = 'active_trip',
+  BuildContext? context,
+}) {
   DateTime _first = tripList
               .get(tripKey == 'active_trip' ? tripKey : int.parse(tripKey))!
               .substances
@@ -97,7 +102,9 @@ List<ListTile> _nullReturn() {
   ];
 }
 
-List<ListTile> _renderList({key: 'active_trip'}) {
+List<ListTile> _renderList({
+  key: 'active_trip',
+}) {
   List<ListTile> listOfTiles = [];
 
   TripRecord? _trip = tripList.get(key);
@@ -123,35 +130,39 @@ List<ListTile> _renderList({key: 'active_trip'}) {
       if (diff < Duration.zero) {
         if (si_iter) {
           listOfTiles.add(_substanceTile(
-              substance: si.current.name,
-              dose: si.current.doseGrade,
-              timestamp: si.current.timestamp,
-              tripKey: key.toString()));
+            substance: si.current.name,
+            dose: si.current.doseGrade,
+            timestamp: si.current.timestamp,
+            tripKey: key.toString(),
+          ));
           si_iter = si.moveNext();
         }
       } else if (diff > Duration.zero) {
         if (ni_iter) {
           listOfTiles.add(_noteTile(
-              note: ni.current.note,
-              timestamp: ni.current.timestamp,
-              tripKey: key.toString()));
+            note: ni.current.note,
+            timestamp: ni.current.timestamp,
+            tripKey: key.toString(),
+          ));
           ni_iter = ni.moveNext();
         }
       } else if (diff == Duration.zero) {
         if (si_iter) {
           listOfTiles.add(_substanceTile(
-              substance: si.current.name,
-              dose: si.current.doseGrade,
-              timestamp: si.current.timestamp,
-              tripKey: key.toString()));
+            substance: si.current.name,
+            dose: si.current.doseGrade,
+            timestamp: si.current.timestamp,
+            tripKey: key.toString(),
+          ));
           si_iter = si.moveNext();
         }
 
         if (ni_iter) {
           listOfTiles.add(_noteTile(
-              note: ni.current.note,
-              timestamp: ni.current.timestamp,
-              tripKey: key.toString()));
+            note: ni.current.note,
+            timestamp: ni.current.timestamp,
+            tripKey: key.toString(),
+          ));
           ni_iter = ni.moveNext();
         }
       } else {

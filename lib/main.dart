@@ -16,19 +16,13 @@ part 'TripLogPage.dart';
 part 'AboutPage.dart';
 part 'TripArchivePage.dart';
 
-late final Box<TripRecord> tripList;
-late final Box<Substance> substanceList;
-late final Box<Note> noteList;
+late Box<TripRecord> tripList;
+late Box<Substance> substanceList;
+late Box<Note> noteList;
 TripRecord? _activeTrip;
 
 void main() async {
   await Hive.initFlutter();
-  // [
-  //   // Only uncomment if you want to wipe the db on load.
-  //   'trip_list',
-  //   'substance_list',
-  //   'note_list',
-  // ].forEach((boxName) => Hive.deleteBoxFromDisk(boxName));
 
   Hive.registerAdapter(ContactMethodAdapter());
   Hive.registerAdapter(EmergencyContactAdapter());
@@ -47,16 +41,16 @@ class TripSit extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'TripSitter Harm Reduction',
       theme: ThemeData.dark().copyWith(
         primaryColor: Colors.red,
       ),
       initialRoute: '/',
       routes: {
         '/': (context) => HomePage(),
-        '/active': (context) => TripLogPage(),
+        '/active': (context) => TripLogPage(context),
         '/archive': (context) => TripArchivePage(),
-        '/archived': (context) => TripLogPage(),
+        '/archived': (context) => TripLogPage(context),
         '/about': (context) => AboutPage(),
       },
     );

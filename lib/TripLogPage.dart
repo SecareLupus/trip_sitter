@@ -1,9 +1,12 @@
 part of 'main.dart';
 
 class TripLogPage extends StatefulWidget {
-  const TripLogPage({Key? key, this.tripKey = 'active_trip'}) : super(key: key);
+  const TripLogPage(
+    BuildContext context, {
+    Key? key,
+    this.tripKey = 'active_trip',
+  }) : super(key: key);
 
-  static const String _title = 'Current Trip Log';
   final dynamic tripKey;
 
   @override
@@ -11,11 +14,8 @@ class TripLogPage extends StatefulWidget {
 }
 
 class _TripLogPageState extends State<TripLogPage> {
-  TripRecord? _currentRecord;
-
   initState() {
     super.initState();
-    _currentRecord = tripList.get(widget.tripKey);
   }
 
   @override
@@ -23,8 +23,10 @@ class _TripLogPageState extends State<TripLogPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.red,
-        title: Text(TripLogPage._title),
-        actions: _popupMenuActions(),
+        title: Text(widget.tripKey == 'active_trip'
+            ? 'Current Trip Log'
+            : 'Archived Trip Log'),
+        actions: _popupMenuActions(context),
       ),
       body: ValueListenableBuilder(
         valueListenable: tripList.listenable(keys: [widget.tripKey]),
@@ -33,32 +35,39 @@ class _TripLogPageState extends State<TripLogPage> {
           return Scrollbar(
               child: ListView(
             padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 5.0),
-            children: _renderList(key: widget.tripKey),
+            children: _renderList(
+              key: widget.tripKey,
+            ),
           ));
         },
       ),
-      floatingActionButton: _fabList(),
+      floatingActionButton: _fabList(context),
     );
   }
 
-  _popupMenuButtonEvent(String value) {
+  _popupMenuButtonEvent(BuildContext context, String value) {
     print('PopupMenuItem Selected: $value');
     if (value == 'End Trip') {
-      _activeTrip?.save();
-      tripList.delete('active_trip');
-      tripList.add(_activeTrip ?? TripRecord());
-      _activeTrip = null;
-      Navigator.pop(context);
-    }
+      showConfirmationDialog(context, callback: () {
+        _activeTrip?.save();
+        tripList.delete('active_trip');
+        tripList.add(_activeTrip ?? TripRecord());
+        _activeTrip = null;
+        Navigator.pop(context);
+      });
+    } else if (value == 'Edit Trip') {}
   }
 
-  List<Widget> _popupMenuActions() {
+  List<Widget> _popupMenuActions(BuildContext context) {
     if (widget.tripKey != 'active_trip') return [];
     return [
       PopupMenuButton<String>(
-        onSelected: (value) => _popupMenuButtonEvent(value),
+        onSelected: (value) => _popupMenuButtonEvent(context, value),
         itemBuilder: (BuildContext context) {
-          return {'Edit Entry', 'End Trip'}.map((String choice) {
+          return {
+            // 'Edit Entry',
+            'End Trip',
+          }.map((String choice) {
             return PopupMenuItem<String>(
               value: choice,
               child: Text(choice),
@@ -69,7 +78,7 @@ class _TripLogPageState extends State<TripLogPage> {
     ];
   }
 
-  Widget? _fabList() {
+  Widget? _fabList(BuildContext context) {
     if (widget.tripKey != 'active_trip') return null;
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,

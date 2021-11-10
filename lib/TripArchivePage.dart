@@ -14,6 +14,7 @@ class _TripArchivePageState extends State<TripArchivePage> {
       appBar: AppBar(
         backgroundColor: Colors.red,
         title: Text('All Saved Triplogs'),
+        actions: _popupMenuActions(context),
       ),
       body: ValueListenableBuilder(
         valueListenable: tripList.listenable(),
@@ -28,6 +29,44 @@ class _TripArchivePageState extends State<TripArchivePage> {
       ),
     );
   }
+
+  _popupMenuButtonEvent(BuildContext context, String value) {
+    print('PopupMenuItem Selected: $value');
+    if (value == 'Clear Archive') {
+      showConfirmationDialog(context, action: 'delete all trip logs',
+          callback: () {
+        [
+          tripList,
+          substanceList,
+          noteList,
+        ].forEach((box) {
+          for (var k in box.keys) {
+            box.delete(k);
+          }
+        });
+        Navigator.pop(context);
+      });
+    } else if (value == 'Edit Trip') {}
+  }
+
+  List<Widget> _popupMenuActions(BuildContext context) {
+    return [
+      PopupMenuButton<String>(
+        onSelected: (value) => _popupMenuButtonEvent(context, value),
+        itemBuilder: (BuildContext context) {
+          return {
+            // 'Edit Entry',
+            'Clear Archive',
+          }.map((String choice) {
+            return PopupMenuItem<String>(
+              value: choice,
+              child: Text(choice),
+            );
+          }).toList();
+        },
+      ),
+    ];
+  }
 }
 
 List<ListTile> _renderArchive(BuildContext context) {
@@ -35,21 +74,27 @@ List<ListTile> _renderArchive(BuildContext context) {
   for (var k in tripList.keys.toList().reversed) {
     TripRecord? r = tripList.get(k);
     tmp.add(ListTile(
-      title: Text(r!.substances.length > 0
-          ? (formatter.format(
-              DateTime.parse(r.substances.first.timestamp ?? 'NullStamp')))
-          : 'NoSubstances'),
-      subtitle: Text((r.key == 'active_trip'
-          ? 'Active Triplog'
-          : substanceSet(r.substances, r.notes))),
-      onTap: () {
-        print('Archived article tapped, k = $k');
-        Navigator.of(context).push(MaterialPageRoute(
-            builder: (BuildContext context) => TripLogPage(
-                  tripKey: k,
-                )));
-      },
-    ));
+        title: Text(r!.substances.length > 0
+            ? (formatter.format(
+                DateTime.parse(r.substances.first.timestamp ?? 'NullStamp')))
+            : 'NoSubstances'),
+        subtitle: Text((r.key == 'active_trip'
+            ? 'Active Triplog'
+            : substanceSet(r.substances, r.notes))),
+        onTap: () {
+          print('Archived article tapped, k = $k');
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (BuildContext context) => TripLogPage(
+                    context,
+                    tripKey: k,
+                  )));
+        },
+        onLongPress: () {
+          showArchiveLongPressDialog(
+            context,
+            selectedLog: r,
+          );
+        }));
   }
   return tmp;
 }
