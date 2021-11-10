@@ -170,6 +170,7 @@ Future<void> showArchiveLongPressDialog(
               onPressed: () {
                 Navigator.of(context).pop();
                 showConfirmationDialog(context, callback: () {
+                  Navigator.of(context).pop();
                   tripList.delete(selectedLog?.key);
                 }, action: 'delete this Triplog');
               },
