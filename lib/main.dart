@@ -8,7 +8,9 @@ import 'package:trip_sitter/hive_objects/Substance.dart';
 import 'package:trip_sitter/hive_objects/TripRecord.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:url_launcher/url_launcher.dart';
+import 'package:simple_autocomplete_formfield/simple_autocomplete_formfield.dart';
 
+part 'AutocompleteEntries.dart';
 part 'HomePage.dart';
 part 'util/InputDialogLib.dart';
 part 'util/ListRendering.dart';

@@ -16,18 +16,57 @@ Future<void> showSubstanceReportDialog(BuildContext context) async {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    TextFormField(
+                    SimpleAutocompleteFormField<String>(
+                      minSearchLength: 1,
+                      maxSuggestions: 3,
                       controller: _substanceTextController,
-                      validator: (value) {
-                        return value!.isNotEmpty
-                            ? null
-                            : 'Substance name required';
-                      },
                       decoration: InputDecoration(
                         border: OutlineInputBorder(),
                         label: Text('Substance Name'),
                       ),
+                      itemBuilder: (BuildContext context, item) => Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(item!),
+                      ),
+                      onSearch: (String search) async => search.isEmpty
+                          ? SUBSTANCES
+                          : SUBSTANCES
+                              .where((_sub) => _sub
+                                  .toLowerCase()
+                                  .contains(search.toLowerCase()))
+                              .toList(),
+                      itemFromString: (string) => SUBSTANCES.singleWhere(
+                          (_sub) => _sub == string.toLowerCase(),
+                          orElse: () => string),
+                      itemToString: (_item) {
+                        print('itemToString: $_item');
+                        return _item ?? '';
+                      },
+                      onChanged: (value) {
+                        print('onChanged: $value');
+                        _substanceTextController.text = value ?? '';
+                      },
+                      onSaved: (value) {
+                        _substanceTextController.text = value ?? '';
+                      },
+                      validator: (value) {
+                        return value?.isNotEmpty ?? false
+                            ? null
+                            : 'Substance name required';
+                      },
                     ),
+                    // TextFormField(
+                    //   controller: _substanceTextController,
+                    // validator: (value) {
+                    //   return value!.isNotEmpty
+                    //       ? null
+                    //       : 'Substance name required';
+                    // },
+                    //   decoration: InputDecoration(
+                    //     border: OutlineInputBorder(),
+                    //     label: Text('Substance Name'),
+                    //   ),
+                    // ),
                     SizedBox(
                       height: 15,
                     ),
