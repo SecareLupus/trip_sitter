@@ -35,18 +35,19 @@ Future<void> showSubstanceReportDialog(BuildContext context) async {
                                   .toLowerCase()
                                   .contains(search.toLowerCase()))
                               .toList(),
-                      itemFromString: (string) => SUBSTANCES.singleWhere(
-                          (_sub) => _sub == string.toLowerCase(),
-                          orElse: () => string),
-                      itemToString: (_item) {
-                        print('itemToString: $_item');
-                        return _item ?? '';
+                      itemFromString: (string) {
+                        return SUBSTANCES.firstWhere((_sub) {
+                          print('itemFromString: string=$string');
+
+                          return _sub.toLowerCase() == string.toLowerCase();
+                        }, orElse: () => string);
                       },
                       onChanged: (value) {
-                        print('onChanged: $value');
+                        print('onChanged: value=$value');
                         _substanceTextController.text = value ?? '';
                       },
                       onSaved: (value) {
+                        print('onSaved: value=$value');
                         _substanceTextController.text = value ?? '';
                       },
                       validator: (value) {
@@ -55,18 +56,6 @@ Future<void> showSubstanceReportDialog(BuildContext context) async {
                             : 'Substance name required';
                       },
                     ),
-                    // TextFormField(
-                    //   controller: _substanceTextController,
-                    // validator: (value) {
-                    //   return value!.isNotEmpty
-                    //       ? null
-                    //       : 'Substance name required';
-                    // },
-                    //   decoration: InputDecoration(
-                    //     border: OutlineInputBorder(),
-                    //     label: Text('Substance Name'),
-                    //   ),
-                    // ),
                     SizedBox(
                       height: 15,
                     ),
