@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.grewityourself.trip_sitter">
    <application
-        android:label="trip_sitter"
+        android:label="TripSitter"
         android:icon="@mipmap/launcher_icon">
         <activity
             android:name=".MainActivity"
