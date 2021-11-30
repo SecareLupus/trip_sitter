@@ -108,6 +108,20 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         backgroundColor: Colors.red,
         title: Text(HomePage._title),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.pushNamed(context, '/preferences');
+            },
+            icon: Icon(Icons.settings),
+          ),
+          IconButton(
+            onPressed: () {
+              AppLock.of(context)!.showLockScreen();
+            },
+            icon: Icon(Icons.lock_outline),
+          ),
+        ],
       ),
       body: Center(
         child: Builder(builder: (context) {

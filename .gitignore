@@ -48,3 +48,5 @@ app.*.map.json
 /android/app/release
 linux/flutter/generated_plugin_registrant.cc
 linux/flutter/generated_plugins.cmake
+assets/icon/icon.png.bak
+assets/icon/icon.png.bak.2

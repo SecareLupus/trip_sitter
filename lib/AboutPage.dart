@@ -78,16 +78,16 @@ class AboutPage extends StatelessWidget {
             tooltip: 'View Source',
             child: Icon(Icons.code),
           ),
-          SizedBox(
-            height: 25.0,
-          ),
-          FloatingActionButton(
-            heroTag: 'donate',
-            onPressed: () {},
-            backgroundColor: Colors.red,
-            tooltip: 'Buy us a coffee',
-            child: Icon(Icons.coffee_sharp),
-          ),
+          // SizedBox(
+          //   height: 25.0,
+          // ),
+          // FloatingActionButton(
+          //   heroTag: 'donate',
+          //   onPressed: () {},
+          //   backgroundColor: Colors.red,
+          //   tooltip: 'Buy us a coffee',
+          //   child: Icon(Icons.coffee_sharp),
+          // ),
         ],
       ),
     );
