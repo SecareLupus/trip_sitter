@@ -6,9 +6,12 @@ Future<void> showSubstanceReportDialog(BuildContext context) async {
   return await showDialog(
       context: context,
       builder: (context) {
+        final FocusNode _substanceFocusNode = FocusNode(),
+            _doseFocusNode = FocusNode();
         final TextEditingController _substanceTextController =
                 TextEditingController(),
             _doseTextController = TextEditingController();
+        String _autocompleteSelection;
         return StatefulBuilder(builder: (context, setState) {
           return AlertDialog(
             content: Form(
@@ -16,50 +19,94 @@ Future<void> showSubstanceReportDialog(BuildContext context) async {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    SimpleAutocompleteFormField<String>(
-                      minSearchLength: 1,
-                      maxSuggestions: 3,
-                      controller: _substanceTextController,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        label: Text('Substance Name'),
+                    RawAutocomplete<String>(
+                      focusNode: _substanceFocusNode,
+                      textEditingController: _substanceTextController,
+                      fieldViewBuilder: (
+                        BuildContext context,
+                        TextEditingController textEditingController,
+                        FocusNode focusNode,
+                        VoidCallback onFieldSubmitted,
+                      ) =>
+                          TextFormField(
+                        controller: textEditingController,
+                        focusNode: focusNode,
+                        onFieldSubmitted: (String value) {
+                          onFieldSubmitted();
+                        },
+                        validator: (value) {
+                          return value!.isNotEmpty
+                              ? null
+                              : 'Substance required';
+                        },
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          label: Text('Substance Taken'),
+                        ),
                       ),
-                      itemBuilder: (BuildContext context, item) => Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text(item!),
+                      optionsViewBuilder: (
+                        BuildContext context,
+                        AutocompleteOnSelected<String> onSelected,
+                        Iterable<String> options,
+                      ) =>
+                          Container(
+                        child: Align(
+                          alignment: Alignment.topLeft,
+                          child: Material(
+                            elevation: 4.0,
+                            child: Container(
+                              width: 250.0,
+                              decoration: BoxDecoration(
+                                  border: Border.fromBorderSide(
+                                      OutlineInputBorder().borderSide)),
+                              child: ListView.builder(
+                                padding: EdgeInsets.all(0.0),
+                                shrinkWrap: true,
+                                itemCount: options.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  final String option =
+                                      options.elementAt(index);
+                                  return GestureDetector(
+                                    onTap: () {
+                                      onSelected(option);
+                                    },
+                                    child: ListTileTheme(
+                                      data: ListTileThemeData(
+                                        tileColor: ThemeData.dark()
+                                            .dialogBackgroundColor,
+                                        textColor: Colors.white,
+                                        selectedTileColor: Colors.black,
+                                      ),
+                                      child: ListTile(
+                                        title: Text(option),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
-                      onSearch: (String search) async => search.isEmpty
-                          ? SUBSTANCES
-                          : SUBSTANCES
-                              .where((_sub) => _sub
-                                  .toLowerCase()
-                                  .contains(search.toLowerCase()))
-                              .toList(),
-                      itemFromString: (string) {
-                        return SUBSTANCES.firstWhere((_sub) {
-                          print('itemFromString: string=$string');
-
-                          return _sub.toLowerCase() == string.toLowerCase();
-                        }, orElse: () => string);
+                      optionsBuilder: (TextEditingValue textEditingValue) {
+                        if (textEditingValue.text == '') {
+                          return SUBSTANCES.take(5);
+                        }
+                        return SUBSTANCES.where((String option) {
+                          return option
+                              .toLowerCase()
+                              .contains(textEditingValue.text.toLowerCase());
+                        }).take(5);
                       },
-                      onChanged: (value) {
-                        print('onChanged: value=$value');
-                        _substanceTextController.text = value ?? '';
-                      },
-                      onSaved: (value) {
-                        print('onSaved: value=$value');
-                        _substanceTextController.text = value ?? '';
-                      },
-                      validator: (value) {
-                        return value?.isNotEmpty ?? false
-                            ? null
-                            : 'Substance name required';
+                      onSelected: (String selection) {
+                        debugPrint('You just selected $selection');
                       },
                     ),
                     SizedBox(
                       height: 15,
                     ),
                     TextFormField(
+                      focusNode: _doseFocusNode,
                       controller: _doseTextController,
                       validator: (value) {
                         return value!.isNotEmpty ? null : 'Dosage required';

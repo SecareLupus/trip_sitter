@@ -30,6 +30,9 @@ late Box<Note> noteList;
 late Box preferences;
 TripRecord? _activeTrip;
 
+late final LocalAuthentication localauth;
+late final bool canBiometrics;
+
 void main() async {
   await Hive.initFlutter();
 
@@ -45,10 +48,15 @@ void main() async {
   _activeTrip = tripList.get('active_trip');
 
   Duration backgroundLockLatency = const Duration(seconds: 30);
+  localauth = LocalAuthentication();
+  canBiometrics = (Platform.isAndroid || Platform.isIOS) &&
+      await localauth.canCheckBiometrics;
 
   runApp(AppLock(
     builder: (args) => TripSit(),
     lockScreen: LockScreen(),
+    // enabled: preferences.get('enableLock', defaultValue: true),
+    enabled: true,
     backgroundLockLatency: backgroundLockLatency,
   ));
 }
@@ -67,7 +75,7 @@ class TripSit extends StatelessWidget {
         '/': (context) => HomePage(),
         '/active': (context) => TripLogPage(context),
         '/archive': (context) => TripArchivePage(),
-        '/preferences': (context) => PreferencesPage(),
+        //'/preferences': (context) => PreferencesPage(),
         '/about': (context) => AboutPage(),
       },
     );
@@ -75,12 +83,11 @@ class TripSit extends StatelessWidget {
 }
 
 class LockScreen extends StatelessWidget {
-  const LockScreen({Key? key}) : super(key: key);
+  LockScreen({Key? key}) : super(key: key);
 
   Future<void> localAuth(BuildContext context) async {
-    final localAuth = LocalAuthentication();
-    if (Platform.isAndroid || Platform.isIOS) {
-      final didAuthenticate = await localAuth.authenticate(
+    if (canBiometrics) {
+      final didAuthenticate = await localauth.authenticate(
         localizedReason: 'Please authenticate',
         biometricOnly: true,
       );
@@ -93,10 +100,12 @@ class LockScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Icon? fingerprintButton;
-    if (Platform.isAndroid || Platform.isIOS)
-      fingerprintButton = Icon(
-        Icons.fingerprint,
-      );
+    localauth.canCheckBiometrics.then((value) {
+      if (value)
+        fingerprintButton = Icon(
+          Icons.fingerprint,
+        );
+    });
     return ScreenLock(
       screenLockConfig: ScreenLockConfig(
         backgroundColor: Colors.grey[850],
@@ -108,7 +117,7 @@ class LockScreen extends StatelessWidget {
         side: BorderSide(color: Colors.white),
       )),
       canCancel: false,
-      correctString: '1234',
+      correctString: preferences.get('pinCode', defaultValue: '1111'),
       customizedButtonChild: fingerprintButton,
       customizedButtonTap: () async {
         await localAuth(context);

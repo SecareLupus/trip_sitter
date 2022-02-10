@@ -115,12 +115,13 @@ class _HomePageState extends State<HomePage> {
             },
             icon: Icon(Icons.settings),
           ),
-          IconButton(
-            onPressed: () {
-              AppLock.of(context)!.showLockScreen();
-            },
-            icon: Icon(Icons.lock_outline),
-          ),
+          if (preferences.get('enableLock', defaultValue: false))
+            IconButton(
+              onPressed: () {
+                AppLock.of(context)!.showLockScreen();
+              },
+              icon: Icon(Icons.lock_outline),
+            ),
         ],
       ),
       body: Center(
