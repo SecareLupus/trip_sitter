@@ -16,77 +16,50 @@ class _PreferencesPageState extends State<PreferencesPage> {
       ),
       body: Column(
         children: [
-          Padding(
-              padding: const EdgeInsets.all(32.0),
-              child: SwitchListTile(
-                title: const Text('Enable App Lock'),
-                value: preferences.get('enableLock', defaultValue: false),
-                onChanged: (bool value) {
-                  setState(() {
-                    preferences.put('enableLock', value);
-                  });
-                },
-                secondary: const Icon(Icons.lock),
-              )),
+          SizedBox(
+            height: 10.0,
+          ),
+          SwitchListTile(
+            title: const Text('Enable App Lock'),
+            value: preferences.get('enableLock', defaultValue: false),
+            onChanged: (bool value) {
+              setState(() {
+                preferences.put('enableLock', value);
+              });
+            },
+            secondary: const Icon(Icons.lock),
+          ),
           if (preferences.get('enableLock', defaultValue: false))
-            Padding(
-                padding: const EdgeInsets.all(32.0),
-                child: ListTile(
-                  title: const Text('Unlock PIN'),
-                  // value: //move this value into the subtitle I think.
-                  //     preferences.get('pinCode', defaultValue: false),
-                  onTap: () {
-                    setState(() {
-                      //Open Applock's pin page for setting pin
-                      //Set pin
+            ListTile(
+              title: const Text('Reset Unlock PIN'),
+              subtitle: Text(
+                  'Current PIN: ${preferences.get('pinCode', defaultValue: 'XXXX')}'),
+              onTap: () {
+                screenLock(
+                    context: context,
+                    correctString: '',
+                    canCancel: true,
+                    confirmation: true,
+                    didConfirmed: (newValue) {
+                      setState(() {
+                        preferences.put('pinCode', newValue);
+                      });
+                      Navigator.pop(context);
                     });
-                  },
-                )),
+              },
+            ),
           if (preferences.get('enableLock', defaultValue: false) &&
               canBiometrics)
-            Padding(
-                padding: const EdgeInsets.all(32.0),
-                child: SwitchListTile(
-                  title: const Text('Enable Fingerprint Unlock'),
-                  value:
-                      preferences.get('enableBiometrics', defaultValue: false),
-                  onChanged: (bool value) {
-                    setState(() {
-                      preferences.put('enableBiometrics', value);
-                    });
-                  },
-                  secondary: const Icon(Icons.fingerprint),
-                )),
-          Padding(
-            padding: const EdgeInsets.all(32.0),
-            child: Row(
-              children: [Text('TESTING')],
+            SwitchListTile(
+              title: const Text('Enable Fingerprint Unlock'),
+              value: preferences.get('enableBiometrics', defaultValue: false),
+              onChanged: (bool value) {
+                setState(() {
+                  preferences.put('enableBiometrics', value);
+                });
+              },
+              secondary: const Icon(Icons.fingerprint),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(32.0),
-            child: Row(
-              children: [Text('TESTING')],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(32.0),
-            child: Row(
-              children: [Text('TESTING')],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(32.0),
-            child: Row(
-              children: [Text('TESTING')],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(32.0),
-            child: Row(
-              children: [Text('TESTING')],
-            ),
-          ),
         ],
       ),
     );

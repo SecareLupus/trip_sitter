@@ -10,7 +10,6 @@ import 'package:trip_sitter/hive_objects/Substance.dart';
 import 'package:trip_sitter/hive_objects/TripRecord.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:url_launcher/url_launcher.dart';
-import 'package:simple_autocomplete_formfield/simple_autocomplete_formfield.dart';
 import 'package:flutter_app_lock/flutter_app_lock.dart';
 import 'package:flutter_screen_lock/flutter_screen_lock.dart';
 import 'package:local_auth/local_auth.dart';
