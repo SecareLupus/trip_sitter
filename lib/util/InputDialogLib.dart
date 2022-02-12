@@ -98,9 +98,7 @@ Future<void> showSubstanceReportDialog(BuildContext context) async {
                               .contains(textEditingValue.text.toLowerCase());
                         }).take(5);
                       },
-                      onSelected: (String selection) {
-                        debugPrint('You just selected $selection');
-                      },
+                      onSelected: (String selection) {},
                     ),
                     SizedBox(
                       height: 15,

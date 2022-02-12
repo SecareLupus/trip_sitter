@@ -28,17 +28,34 @@ class _PreferencesPageState extends State<PreferencesPage> {
                 },
                 secondary: const Icon(Icons.lock),
               )),
+          if (preferences.get('enableLock', defaultValue: false))
+            Padding(
+                padding: const EdgeInsets.all(32.0),
+                child: ListTile(
+                  title: const Text('Unlock PIN'),
+                  // value: //move this value into the subtitle I think.
+                  //     preferences.get('pinCode', defaultValue: false),
+                  onTap: () {
+                    setState(() {
+                      //Open Applock's pin page for setting pin
+                      //Set pin
+                    });
+                  },
+                )),
           if (preferences.get('enableLock', defaultValue: false) &&
               canBiometrics)
             Padding(
                 padding: const EdgeInsets.all(32.0),
                 child: SwitchListTile(
-                  title: const Text('Enable Biometric Unlock'),
-                  value: true,
+                  title: const Text('Enable Fingerprint Unlock'),
+                  value:
+                      preferences.get('enableBiometrics', defaultValue: false),
                   onChanged: (bool value) {
-                    setState(() {});
+                    setState(() {
+                      preferences.put('enableBiometrics', value);
+                    });
                   },
-                  secondary: const Icon(Icons.lock),
+                  secondary: const Icon(Icons.fingerprint),
                 )),
           Padding(
             padding: const EdgeInsets.all(32.0),
